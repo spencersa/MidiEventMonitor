@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidiEventMonitor", "MidiEventMonitor.csproj", "{FF0A8AD3-AEAA-4AC4-B3E6-54A4E03D987F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF0A8AD3-AEAA-4AC4-B3E6-54A4E03D987F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0A8AD3-AEAA-4AC4-B3E6-54A4E03D987F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0A8AD3-AEAA-4AC4-B3E6-54A4E03D987F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0A8AD3-AEAA-4AC4-B3E6-54A4E03D987F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC9AEC8C-87D3-496C-96A1-5557E53D694A}
+	EndGlobalSection
+EndGlobal
