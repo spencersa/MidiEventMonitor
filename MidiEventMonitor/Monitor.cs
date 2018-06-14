@@ -1,9 +1,9 @@
 ﻿using NAudio.Midi;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace MidiEventMonitor
 {
@@ -14,12 +14,14 @@ namespace MidiEventMonitor
 
     public class Monitor : IMonitor
     {
-        int _numberOfDevices;
-        List<MidiInCapabilities> _midiInCapabilities;
+
+        private int _numberOfDevices;
+        private readonly Process[] _processes;
+        private List<MidiInCapabilities> _midiInCapabilities;
         public List<MidiIn> MidiIns { get; set; }
 
 
-        public Monitor()
+        public Monitor(string processToSendKeyPressesTo)
         {
             _numberOfDevices = MidiIn.NumberOfDevices;
             _midiInCapabilities = GetMidiInCapabilities();
@@ -33,22 +35,13 @@ namespace MidiEventMonitor
                 midiIn.Start();
                 MidiIns.Add(midiIn);
             }
+
+            _processes = Process.GetProcessesByName(processToSendKeyPressesTo);
         }
 
         public IEnumerable<string> GetConnectedDeviceInformation()
         {
             return _midiInCapabilities.Select(x => $"ProductId: {x.ProductId} | ProductName:{x.ProductName} | Manufacturer:{x.Manufacturer}");
-        }
-
-        void MidiIn_ErrorReceived(object sender, MidiInMessageEventArgs e)
-        {
-            Logger(String.Format("Time {0} Message 0x{1:X8} Event {2}",
-                e.Timestamp, e.RawMessage, e.MidiEvent));
-        }
-
-        void MidiIn_MessageReceived(object sender, MidiInMessageEventArgs e)
-        {
-            Logger(String.Format("Time {0} Message 0x{1:X8} Event {2}", e.Timestamp, e.RawMessage, e.MidiEvent));
         }
 
         private List<MidiInCapabilities> GetMidiInCapabilities()
@@ -61,13 +54,33 @@ namespace MidiEventMonitor
             return devices;
         }
 
-        public void Logger(string lines)
+        private void MidiIn_ErrorReceived(object sender, MidiInMessageEventArgs e)
+        {
+            Logger(String.Format("Time {0} Message 0x{1:X8} Event {2}",
+                e.Timestamp, e.RawMessage, e.MidiEvent));
+        }
+
+        private void MidiIn_MessageReceived(object sender, MidiInMessageEventArgs e)
+        {
+            Logger(String.Format("Time {0} Message 0x{1:X8} Event {2}", e.Timestamp, e.RawMessage, e.MidiEvent));
+        }
+
+        [DllImport("user32.dll", EntryPoint = "FindWindowEx")]
+        public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
+        [DllImport("User32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
+        public void SendKey(string key)
+        {
+            IntPtr child = FindWindowEx(_processes[0].MainWindowHandle, new IntPtr(0), "Edit", null);
+            SendMessage(child, 0x000C, 0, key);
+        }
+
+        private void Logger(string lines)
         {
             System.IO.StreamWriter file = new System.IO.StreamWriter("c:\\temp\\log.log", true);
             file.WriteLine(lines);
 
             file.Close();
-
         }
     }
 }

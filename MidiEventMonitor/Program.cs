@@ -13,7 +13,7 @@ namespace MidiEventMonitor
             string command;
             bool quit = false;
 
-            var monitor = new Monitor();
+            var monitor = new Monitor("notepad");
 
             while (!quit)
             {
@@ -21,6 +21,9 @@ namespace MidiEventMonitor
                 switch (command)
                 {
                     case "-devices":
+                    case "-a":
+                        monitor.SendKey("hello world");
+                        break;
                     case "-d":
                         var devices = monitor.GetConnectedDeviceInformation();
                         foreach (var device in devices)
